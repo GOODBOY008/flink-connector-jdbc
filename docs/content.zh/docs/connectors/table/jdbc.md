@@ -48,14 +48,14 @@ JDBC 连接器不是二进制发行版的一部分，请查阅[这里]({{< ref "
 
 在连接到具体数据库时，也需要对应的驱动依赖，目前支持的驱动如下：
 
-| Driver      |      Group Id      |      Artifact Id       |      JAR         |
-| :-----------| :------------------| :----------------------| :----------------|
-| MySQL       |       `mysql`      | `mysql-connector-java` | [下载](https://repo.maven.apache.org/maven2/mysql/mysql-connector-java/) |
-| Oracle      | `com.oracle.database.jdbc` |        `ojdbc8`        | [下载](https://mvnrepository.com/artifact/com.oracle.database.jdbc/ojdbc8)
-| PostgreSQL  |  `org.postgresql`  |      `postgresql`      | [下载](https://jdbc.postgresql.org/download/) |
-| Derby       | `org.apache.derby` |        `derby`         | [下载](http://db.apache.org/derby/derby_downloads.html) | |
-| SQL Server | `com.microsoft.sqlserver` |        `mssql-jdbc`         | [下载](https://docs.microsoft.com/en-us/sql/connect/jdbc/download-microsoft-jdbc-driver-for-sql-server?view=sql-server-ver16) |
-
+| Driver     | Group Id                   | Artifact Id            | JAR                                                                                                                         |
+|:-----------|:---------------------------|:-----------------------|:----------------------------------------------------------------------------------------------------------------------------|
+| MySQL      | `mysql`                    | `mysql-connector-java` | [下载](https://repo.maven.apache.org/maven2/mysql/mysql-connector-java/)                                                      |
+| Oracle     | `com.oracle.database.jdbc` | `ojdbc8`               | [下载](https://mvnrepository.com/artifact/com.oracle.database.jdbc/ojdbc8)                                                    |
+| PostgreSQL | `org.postgresql`           | `postgresql`           | [下载](https://jdbc.postgresql.org/download/)                                                                             |
+| Derby      | `org.apache.derby`         | `derby`                | [下载](http://db.apache.org/derby/derby_downloads.html)                                                                       | 
+| SQL Server | `com.microsoft.sqlserver`  | `mssql-jdbc`           | [下载](https://docs.microsoft.com/en-us/sql/connect/jdbc/download-microsoft-jdbc-driver-for-sql-server?view=sql-server-ver16) |
+| Db2        | `com.ibm.db2.jcc`          | `db2jcc`               | [下载](https://www.ibm.com/support/pages/download-db2-fix-packs-version-db2-linux-unix-and-windows)                           |
 当前，JDBC 连接器和驱动不在 Flink 二进制发布包中，请参阅[这里]({{< ref "docs/dev/configuration/overview" >}})了解在集群上执行时何连接它们。
 
 
@@ -405,6 +405,13 @@ lookup cache 的主要目的是用于提高时态表关联 JDBC 连接器的性�
                 WHEN NOT MATCHED THEN INSERT (..) <br>
                 VALUES (..)</td>
         </tr>
+        <tr>
+            <td>Db2</td>
+            <td>MERGE INTO .. AS TARGET USING TABLE (VALUES (..)) AS SOURCE (..) ON (..) <br>
+                WHEN MATCHED THEN UPDATE SET .. <br>
+                WHEN NOT MATCHED THEN INSERT (..) <br>
+                VALUES (..)</td>
+        </tr>
     </tbody>
 </table>
 
@@ -549,11 +556,11 @@ catalogs:
 
 因此，Flink Catalog 和 Postgres 之间的元空间映射如下：
 
-| Flink Catalog Metaspace Structure    |   Postgres Metaspace Structure      |
-| :------------------------------------| :-----------------------------------|
-| catalog name (defined in Flink only) | N/A                                 |
-| database name                        | database name                       |
-| table name                           | [schema_name.]table_name            |
+| Flink Catalog Metaspace Structure    | Postgres Metaspace Structure |
+|:-------------------------------------|:-----------------------------|
+| catalog name (defined in Flink only) | N/A                          |
+| database name                        | database name                |
+| table name                           | [schema_name.]table_name     |
 
 Flink 中的 Postgres 表的完整路径应该是 ``"<catalog>.<db>.`<schema.table>`"``。如果指定了 schema，请注意需要转义 `<schema.table>`。
 
@@ -584,11 +591,11 @@ MySQL 实例中的数据库与 MySQL Catalog 注册的 catalog 下的数据库�
 
 因此，Flink Catalog 和 MySQL catalog 之间的元空间映射如下：
 
-| Flink Catalog Metaspace Structure    |   MySQL Metaspace Structure         |
-| :------------------------------------| :-----------------------------------|
-| catalog name (defined in Flink only) | N/A                                 |
-| database name                        | database name                       |
-| table name                           | table_name                          |
+| Flink Catalog Metaspace Structure    | MySQL Metaspace Structure |
+|:-------------------------------------|:--------------------------|
+| catalog name (defined in Flink only) | N/A                       |
+| database name                        | database name             |
+| table name                           | table_name                |
 
 Flink 中的 MySQL 表的完整路径应该是 ``"`<catalog>`.`<db>`.`<table>`"``。
 
@@ -609,7 +616,7 @@ SELECT * FROM given_database.test_table2;
 
 数据类型映射
 ----------------
-Flink 支持连接到多个使用方言（dialect）的数据库，如 MySQL、Oracle、PostgreSQL、Derby 等。其中，Derby 通常是用于测试目的。下表列出了从关系数据库数据类型到 Flink SQL 数据类型的类型映射，映射表可以使得在 Flink 中定义 JDBC 表更加简单。
+Flink 支持连接到多个使用方言（dialect）的数据库，如 MySQL、Oracle、PostgreSQL、Derby、Db2、 SQL Server 等。其中，Derby 通常是用于测试目的。下表列出了从关系数据库数据类型到 Flink SQL 数据类型的类型映射，映射表可以使得在 Flink 中定义 JDBC 表更加简单。
 
 <table class="table table-bordered">
     <thead>
@@ -618,6 +625,7 @@ Flink 支持连接到多个使用方言（dialect）的数据库，如 MySQL、O
         <th class="text-left"><a href="https://docs.oracle.com/database/121/SQLRF/sql_elements001.htm#SQLRF30020">Oracle type</a></th>
         <th class="text-left"><a href="https://www.postgresql.org/docs/12/datatype.html">PostgreSQL type</a></th>
         <th class="text-left"><a href="https://docs.microsoft.com/en-us/sql/t-sql/data-types/data-types-transact-sql?view=sql-server-ver16">SQL Server type</a></th>
+        <th class="text-left"><a href="https://www.ibm.com/docs/en/db2-for-zos/12?topic=columns-data-types">Db2</a></th>
         <th class="text-left"><a href="{{< ref "docs/dev/table/types" >}}">Flink SQL type</a></th>
       </tr>
     </thead>
@@ -627,6 +635,7 @@ Flink 支持连接到多个使用方言（dialect）的数据库，如 MySQL、O
       <td></td>
       <td></td>
       <td><code>TINYINT</code></td>
+      <td></td>
       <td><code>TINYINT</code></td>
     </tr>
     <tr>
@@ -641,6 +650,7 @@ Flink 支持连接到多个使用方言（dialect）的数据库，如 MySQL、O
         <code>SERIAL2</code></td>
       <td><code>SMALLINT</code></td>
       <td><code>SMALLINT</code></td>
+      <td><code>SMALLINT</code></td>
     </tr>
     <tr>
       <td>
@@ -652,6 +662,7 @@ Flink 支持连接到多个使用方言（dialect）的数据库，如 MySQL、O
         <code>INTEGER</code><br>
         <code>SERIAL</code></td>
       <td><code>INT</code></td>
+      <td><code>INTEGER</code></td>
       <td><code>INT</code></td>
     </tr>
     <tr>
@@ -663,6 +674,7 @@ Flink 支持连接到多个使用方言（dialect）的数据库，如 MySQL、O
         <code>BIGINT</code><br>
         <code>BIGSERIAL</code></td>
       <td><code>BIGINT</code></td>
+      <td></td>
       <td><code>BIGINT</code></td>
     </tr>
    <tr>
@@ -670,9 +682,12 @@ Flink 支持连接到多个使用方言（dialect）的数据库，如 MySQL、O
       <td></td>
       <td></td>
       <td></td>
+      <td></td>
       <td><code>DECIMAL(20, 0)</code></td>
     </tr>
     <tr>
+      <td><code>BIGINT</code></td>
+      <td></td>
       <td><code>BIGINT</code></td>
       <td></td>
       <td><code>BIGINT</code></td>
@@ -686,6 +701,7 @@ Flink 支持连接到多个使用方言（dialect）的数据库，如 MySQL、O
         <code>REAL</code><br>
         <code>FLOAT4</code></td>
       <td><code>REAL</code></td>
+      <td><code>REAL</code></td>
       <td><code>FLOAT</code></td>
     </tr>
     <tr>
@@ -697,6 +713,7 @@ Flink 支持连接到多个使用方言（dialect）的数据库，如 MySQL、O
         <code>FLOAT8</code><br>
         <code>DOUBLE PRECISION</code></td>
       <td><code>FLOAT</code></td>
+      <td><code>DOUBLE</code></td>
       <td><code>DOUBLE</code></td>
     </tr>
     <tr>
@@ -713,6 +730,10 @@ Flink 支持连接到多个使用方言（dialect）的数据库，如 MySQL、O
         <code>NUMERIC(p, s)</code><br>
         <code>DECIMAL(p, s)</code></td>
       <td><code>DECIMAL(p, s)</code></td>
+      <td>
+        <code>NUMERIC(p, s)</code>
+        <code>DECIMAL(p, s)</code>
+      </td>
       <td><code>DECIMAL(p, s)</code></td>
     </tr>
     <tr>
@@ -723,8 +744,10 @@ Flink 支持连接到多个使用方言（dialect）的数据库，如 MySQL、O
       <td><code>BOOLEAN</code></td>
       <td><code>BIT</code></td>
       <td><code>BOOLEAN</code></td>
+      <td><code>BOOLEAN</code></td>
     </tr>
     <tr>
+      <td><code>DATE</code></td>
       <td><code>DATE</code></td>
       <td><code>DATE</code></td>
       <td><code>DATE</code></td>
@@ -736,6 +759,7 @@ Flink 支持连接到多个使用方言（dialect）的数据库，如 MySQL、O
       <td><code>DATE</code></td>
       <td><code>TIME [(p)] [WITHOUT TIMEZONE]</code></td>
       <td><code>TIME(0)</code></td>
+      <td><code>TIME</code></td>
       <td><code>TIME [(p)] [WITHOUT TIMEZONE]</code></td>
     </tr>
     <tr>
@@ -746,6 +770,7 @@ Flink 支持连接到多个使用方言（dialect）的数据库，如 MySQL、O
         <code>DATETIME</code>
         <code>DATETIME2</code>
       </td>
+      <td><code>TIMESTAMP [(p)]</code></td>
       <td><code>TIMESTAMP [(p)] [WITHOUT TIMEZONE]</code></td>
     </tr>
     <tr>
@@ -770,6 +795,10 @@ Flink 支持连接到多个使用方言（dialect）的数据库，如 MySQL、O
         <code>NVARCHAR(n)</code><br>
         <code>TEXT</code><br>
         <code>NTEXT</code></td>
+      <td>
+        <code>VARCHAR(n)</code><br>
+        <code>CHAR [(p)]</code>
+      </td>
       <td><code>STRING</code></td>
     </tr>
     <tr>
@@ -783,13 +812,16 @@ Flink 支持连接到多个使用方言（dialect）的数据库，如 MySQL、O
       <td><code>BYTEA</code></td>
       <td>
         <code>BINARY(n)</code><br>
-        <code>VARBINARY(n)</code><br></td>
+        <code>VARBINARY(n)</code><br>
+      </td>
+      <td></td>
       <td><code>BYTES</code></td>
     </tr>
     <tr>
       <td></td>
       <td></td>
       <td><code>ARRAY</code></td>
+      <td></td>
       <td></td>
       <td><code>ARRAY</code></td>
     </tr>
