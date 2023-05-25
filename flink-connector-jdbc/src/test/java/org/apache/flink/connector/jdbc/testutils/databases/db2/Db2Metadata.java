@@ -19,15 +19,16 @@ package org.apache.flink.connector.jdbc.testutils.databases.db2;
 
 import org.apache.flink.connector.jdbc.testutils.DatabaseMetadata;
 
-import oracle.jdbc.xa.client.OracleXADataSource;
+import com.ibm.db2.jcc.DB2XADataSource;
 import org.testcontainers.containers.Db2Container;
 
 import javax.sql.XADataSource;
 
-import java.sql.SQLException;
-
 /** Db2 Metadata. */
 public class Db2Metadata implements DatabaseMetadata {
+    private final String host;
+    private final Integer port;
+    private final String dataBaseName;
     private final String username;
     private final String password;
     private final String url;
@@ -38,6 +39,9 @@ public class Db2Metadata implements DatabaseMetadata {
     public Db2Metadata(Db2Container container, boolean hasXaEnabled) {
         this.username = container.getUsername();
         this.password = container.getPassword();
+        this.host = container.getHost();
+        this.port = container.getMappedPort(50000);
+        this.dataBaseName = container.getDatabaseName();
         this.url = container.getJdbcUrl();
         this.driver = container.getDriverClassName();
         this.version = container.getDockerImageName();
@@ -67,18 +71,13 @@ public class Db2Metadata implements DatabaseMetadata {
 
     @Override
     public XADataSource buildXaDataSource() {
-        if (!xaEnabled) {
-            throw new UnsupportedOperationException();
-        }
-        try {
-            OracleXADataSource xaDataSource = new OracleXADataSource();
-            xaDataSource.setURL(getJdbcUrl());
-            xaDataSource.setUser(getUsername());
-            xaDataSource.setPassword(getPassword());
-            return xaDataSource;
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
+        DB2XADataSource xaDataSource = new DB2XADataSource();
+        xaDataSource.setDatabaseName(dataBaseName);
+        xaDataSource.setUser(getUsername());
+        xaDataSource.setPassword(getPassword());
+        xaDataSource.setServerName(host);
+        xaDataSource.setPortNumber(port);
+        return xaDataSource;
     }
 
     @Override
