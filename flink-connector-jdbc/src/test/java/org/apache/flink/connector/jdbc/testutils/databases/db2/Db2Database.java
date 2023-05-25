@@ -50,7 +50,7 @@ public class Db2Database extends DatabaseExtension {
             throw new FlinkRuntimeException("Container is stopped.");
         }
         if (metadata == null) {
-            metadata = new Db2Metadata(CONTAINER, true);
+            metadata = new Db2Metadata(CONTAINER);
         }
         return metadata;
     }

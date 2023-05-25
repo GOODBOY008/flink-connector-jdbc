@@ -34,9 +34,8 @@ public class Db2Metadata implements DatabaseMetadata {
     private final String url;
     private final String driver;
     private final String version;
-    private final boolean xaEnabled;
 
-    public Db2Metadata(Db2Container container, boolean hasXaEnabled) {
+    public Db2Metadata(Db2Container container) {
         this.username = container.getUsername();
         this.password = container.getPassword();
         this.host = container.getHost();
@@ -45,7 +44,6 @@ public class Db2Metadata implements DatabaseMetadata {
         this.url = container.getJdbcUrl();
         this.driver = container.getDriverClassName();
         this.version = container.getDockerImageName();
-        this.xaEnabled = hasXaEnabled;
     }
 
     @Override

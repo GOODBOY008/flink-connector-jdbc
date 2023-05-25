@@ -72,7 +72,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 /** The Table Sink ITCase for {@link Db2Dialect}. */
 public class Db2TableSinkITCase extends JdbcDynamicTableSourceITCase implements Db2TestBase {
 
-    private static String containerUrl;
     public static final String OUTPUT_TABLE1 = "dynamicSinkForUpsert";
     public static final String OUTPUT_TABLE2 = "dynamicSinkForAppend";
     public static final String OUTPUT_TABLE3 = "dynamicSinkForBatch";
@@ -82,13 +81,6 @@ public class Db2TableSinkITCase extends JdbcDynamicTableSourceITCase implements 
 
     @BeforeEach
     public void before() throws ClassNotFoundException, SQLException {
-
-        containerUrl =
-                String.format(
-                        "%s;username=%s;password=%s",
-                        getMetadata().getJdbcUrl(),
-                        getMetadata().getUsername(),
-                        getMetadata().getPassword());
 
         try (Connection conn = getMetadata().getConnection();
                 Statement stat = conn.createStatement()) {
