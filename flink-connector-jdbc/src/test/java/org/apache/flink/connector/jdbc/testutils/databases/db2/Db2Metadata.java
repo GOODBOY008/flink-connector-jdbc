@@ -77,6 +77,7 @@ public class Db2Metadata implements DatabaseMetadata {
         xaDataSource.setPassword(getPassword());
         xaDataSource.setServerName(host);
         xaDataSource.setPortNumber(port);
+        xaDataSource.setDriverType(4);
         return xaDataSource;
     }
 
