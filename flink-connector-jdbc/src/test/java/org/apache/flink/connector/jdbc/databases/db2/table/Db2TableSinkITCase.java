@@ -16,11 +16,14 @@
  * limitations under the License.
  */
 
-package org.apache.flink.connector.jdbc.dialect.db2;
+package org.apache.flink.connector.jdbc.databases.db2.table;
 
 import org.apache.flink.api.java.tuple.Tuple4;
 import org.apache.flink.configuration.Configuration;
+import org.apache.flink.connector.jdbc.databases.db2.Db2TestBase;
+import org.apache.flink.connector.jdbc.databases.db2.dialect.Db2Dialect;
 import org.apache.flink.connector.jdbc.internal.GenericJdbcSinkFunction;
+import org.apache.flink.connector.jdbc.table.JdbcDynamicTableSourceITCase;
 import org.apache.flink.runtime.state.StateSnapshotContextSynchronousImpl;
 import org.apache.flink.streaming.api.datastream.DataStream;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
@@ -67,7 +70,7 @@ import static org.apache.flink.table.factories.utils.FactoryMocks.createTableSin
 import static org.assertj.core.api.Assertions.assertThat;
 
 /** The Table Sink ITCase for {@link Db2Dialect}. */
-public class Db2TableSinkITCase extends Db2TestBaseITCase {
+public class Db2TableSinkITCase extends JdbcDynamicTableSourceITCase implements Db2TestBase {
 
     private static String containerUrl;
     public static final String OUTPUT_TABLE1 = "dynamicSinkForUpsert";
@@ -83,11 +86,11 @@ public class Db2TableSinkITCase extends Db2TestBaseITCase {
         containerUrl =
                 String.format(
                         "%s;username=%s;password=%s",
-                        DB2_CONTAINER.getJdbcUrl(),
-                        DB2_CONTAINER.getUsername(),
-                        DB2_CONTAINER.getPassword());
+                        getMetadata().getJdbcUrl(),
+                        getMetadata().getUsername(),
+                        getMetadata().getPassword());
 
-        try (Connection conn = getJdbcConnection();
+        try (Connection conn = getMetadata().getConnection();
                 Statement stat = conn.createStatement()) {
             stat.executeUpdate(
                     "CREATE TABLE "
@@ -134,7 +137,7 @@ public class Db2TableSinkITCase extends Db2TestBaseITCase {
 
     @AfterEach
     public void after() throws SQLException {
-        try (Connection conn = getJdbcConnection();
+        try (Connection conn = getMetadata().getConnection();
                 Statement stat = conn.createStatement()) {
             stat.executeUpdate("DROP TABLE " + OUTPUT_TABLE1);
             stat.executeUpdate("DROP TABLE " + OUTPUT_TABLE2);
@@ -194,16 +197,16 @@ public class Db2TableSinkITCase extends Db2TestBaseITCase {
                         + ") WITH ("
                         + "  'connector'='jdbc',"
                         + "  'url'='"
-                        + DB2_CONTAINER.getJdbcUrl()
+                        + getMetadata().getJdbcUrl()
                         + "',"
                         + "  'table-name'='"
                         + OUTPUT_TABLE4
                         + "',"
                         + "  'username'='"
-                        + DB2_CONTAINER.getUsername()
+                        + getMetadata().getUsername()
                         + "',"
                         + "  'password'='"
-                        + DB2_CONTAINER.getPassword()
+                        + getMetadata().getPassword()
                         + "'"
                         + ")");
 
@@ -246,16 +249,16 @@ public class Db2TableSinkITCase extends Db2TestBaseITCase {
                         + ") WITH ("
                         + "  'connector'='jdbc',"
                         + "  'url'='"
-                        + DB2_CONTAINER.getJdbcUrl()
+                        + getMetadata().getJdbcUrl()
                         + "',"
                         + "  'table-name'='"
                         + OUTPUT_TABLE1
                         + "',"
                         + "  'username'='"
-                        + DB2_CONTAINER.getUsername()
+                        + getMetadata().getUsername()
                         + "',"
                         + "  'password'='"
-                        + DB2_CONTAINER.getPassword()
+                        + getMetadata().getPassword()
                         + "',"
                         + "  'sink.buffer-flush.max-rows' = '2',"
                         + "  'sink.buffer-flush.interval' = '0',"
@@ -303,16 +306,16 @@ public class Db2TableSinkITCase extends Db2TestBaseITCase {
                         + ") WITH ("
                         + "  'connector'='jdbc',"
                         + "  'url'='"
-                        + DB2_CONTAINER.getJdbcUrl()
+                        + getMetadata().getJdbcUrl()
                         + "',"
                         + "  'table-name'='"
                         + OUTPUT_TABLE2
                         + "',"
                         + "  'username'='"
-                        + DB2_CONTAINER.getUsername()
+                        + getMetadata().getUsername()
                         + "',"
                         + "  'password'='"
-                        + DB2_CONTAINER.getPassword()
+                        + getMetadata().getPassword()
                         + "'"
                         + ")");
 
@@ -339,16 +342,16 @@ public class Db2TableSinkITCase extends Db2TestBaseITCase {
                         + ") WITH ( "
                         + "'connector' = 'jdbc',"
                         + "'url'='"
-                        + DB2_CONTAINER.getJdbcUrl()
+                        + getMetadata().getJdbcUrl()
                         + "',"
                         + "'table-name' = '"
                         + OUTPUT_TABLE3
                         + "',"
                         + "  'username'='"
-                        + DB2_CONTAINER.getUsername()
+                        + getMetadata().getUsername()
                         + "',"
                         + "  'password'='"
-                        + DB2_CONTAINER.getPassword()
+                        + getMetadata().getPassword()
                         + "',"
                         + "'sink.buffer-flush.max-rows' = '2',"
                         + "'sink.buffer-flush.interval' = '300ms',"
@@ -404,16 +407,16 @@ public class Db2TableSinkITCase extends Db2TestBaseITCase {
                         + ") WITH (\n"
                         + "  'connector' = 'jdbc',"
                         + "  'url'='"
-                        + DB2_CONTAINER.getJdbcUrl()
+                        + getMetadata().getJdbcUrl()
                         + "',"
                         + "  'table-name' = '"
                         + USER_TABLE
                         + "',"
                         + "  'username'='"
-                        + DB2_CONTAINER.getUsername()
+                        + getMetadata().getUsername()
                         + "',"
                         + "  'password'='"
-                        + DB2_CONTAINER.getPassword()
+                        + getMetadata().getPassword()
                         + "',"
                         + "  'sink.buffer-flush.max-rows' = '2',"
                         + "  'sink.buffer-flush.interval' = '0'"
@@ -450,11 +453,11 @@ public class Db2TableSinkITCase extends Db2TestBaseITCase {
     public void testFlushBufferWhenCheckpoint() throws Exception {
         Map<String, String> options = new HashMap<>();
         options.put("connector", "jdbc");
-        options.put("url", DB2_CONTAINER.getJdbcUrl());
+        options.put("url", getMetadata().getJdbcUrl());
         options.put("table-name", OUTPUT_TABLE5);
         options.put("sink.buffer-flush.interval", "0");
-        options.put("username", DB2_CONTAINER.getUsername());
-        options.put("password", DB2_CONTAINER.getPassword());
+        options.put("username", getMetadata().getUsername());
+        options.put("password", getMetadata().getPassword());
 
         ResolvedSchema schema =
                 ResolvedSchema.of(Column.physical("id", DataTypes.BIGINT().notNull()));
@@ -478,7 +481,7 @@ public class Db2TableSinkITCase extends Db2TestBaseITCase {
     }
 
     public void check(Row[] rows, String table, String[] fields) throws SQLException {
-        try (Connection dbConn = getJdbcConnection();
+        try (Connection dbConn = getMetadata().getConnection();
                 PreparedStatement statement = dbConn.prepareStatement("select * from " + table);
                 ResultSet resultSet = statement.executeQuery()) {
             List<String> results = new ArrayList<>();

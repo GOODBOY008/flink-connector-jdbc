@@ -16,22 +16,10 @@
  * limitations under the License.
  */
 
-package org.apache.flink.connector.jdbc.dialect.db2;
+package org.apache.flink.connector.jdbc.databases.db2.xa;
 
-import org.apache.flink.annotation.Internal;
-import org.apache.flink.connector.jdbc.dialect.JdbcDialect;
-import org.apache.flink.connector.jdbc.dialect.JdbcDialectFactory;
+import org.apache.flink.connector.jdbc.databases.db2.Db2TestBase;
+import org.apache.flink.connector.jdbc.xa.JdbcExactlyOnceSinkE2eTest;
 
-/** Factory for {@link Db2Dialect}. */
-@Internal
-public class Db2DialectFactory implements JdbcDialectFactory {
-    @Override
-    public boolean acceptsURL(String url) {
-        return url.startsWith("jdbc:db2:");
-    }
-
-    @Override
-    public JdbcDialect create() {
-        return new Db2Dialect();
-    }
-}
+/** A simple end-to-end test for {@link JdbcExactlyOnceSinkE2eTest}. */
+public class Db2ExactlyOnceSinkE2eTest extends JdbcExactlyOnceSinkE2eTest implements Db2TestBase {}

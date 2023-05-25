@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package org.apache.flink.connector.jdbc.dialect.db2;
+package org.apache.flink.connector.jdbc.databases.db2.dialect;
 
 import org.apache.flink.connector.jdbc.converter.JdbcRowConverter;
 import org.apache.flink.connector.jdbc.dialect.AbstractDialect;
@@ -31,7 +31,8 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-class Db2Dialect extends AbstractDialect {
+/** JDBC dialect for IBM Db2. */
+public class Db2Dialect extends AbstractDialect {
 
     private static final long serialVersionUID = 1L;
 

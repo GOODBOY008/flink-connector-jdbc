@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package org.apache.flink.connector.jdbc.dialect.db2;
+package org.apache.flink.connector.jdbc.databases.db2.dialect;
 
 import org.apache.flink.connector.jdbc.dialect.JdbcDialectTypeTest;
 

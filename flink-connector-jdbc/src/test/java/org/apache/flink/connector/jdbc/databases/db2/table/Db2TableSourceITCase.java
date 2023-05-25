@@ -16,8 +16,11 @@
  * limitations under the License.
  */
 
-package org.apache.flink.connector.jdbc.dialect.db2;
+package org.apache.flink.connector.jdbc.databases.db2.table;
 
+import org.apache.flink.connector.jdbc.databases.db2.Db2TestBase;
+import org.apache.flink.connector.jdbc.databases.db2.dialect.Db2Dialect;
+import org.apache.flink.connector.jdbc.table.JdbcDynamicTableSourceITCase;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 import org.apache.flink.table.api.TableEnvironment;
 import org.apache.flink.table.api.bridge.java.StreamTableEnvironment;
@@ -39,7 +42,7 @@ import java.util.stream.Stream;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /** The Table Source ITCase for {@link Db2Dialect}. */
-public class Db2TableSourceITCase extends Db2TestBaseITCase {
+public class Db2TableSourceITCase extends JdbcDynamicTableSourceITCase implements Db2TestBase {
 
     private static final String INPUT_TABLE = "sql_test_table";
     private static StreamExecutionEnvironment env;
@@ -49,7 +52,7 @@ public class Db2TableSourceITCase extends Db2TestBaseITCase {
     public void before() throws ClassNotFoundException, SQLException {
         env = StreamExecutionEnvironment.getExecutionEnvironment();
         tEnv = StreamTableEnvironment.create(env);
-        try (Connection conn = getJdbcConnection();
+        try (Connection conn = getMetadata().getConnection();
                 Statement statement = conn.createStatement()) {
             statement.executeUpdate(
                     "CREATE TABLE "
@@ -95,7 +98,7 @@ public class Db2TableSourceITCase extends Db2TestBaseITCase {
     public void after() throws ClassNotFoundException, SQLException {
         env = StreamExecutionEnvironment.getExecutionEnvironment();
         tEnv = StreamTableEnvironment.create(env);
-        try (Connection conn = getJdbcConnection();
+        try (Connection conn = getMetadata().getConnection();
                 Statement statement = conn.createStatement()) {
             statement.executeUpdate("DROP TABLE " + INPUT_TABLE);
         }
@@ -182,16 +185,16 @@ public class Db2TableSourceITCase extends Db2TestBaseITCase {
                         + ") WITH ("
                         + "  'connector'='jdbc',"
                         + "  'url'='"
-                        + DB2_CONTAINER.getJdbcUrl()
+                        + getMetadata().getJdbcUrl()
                         + "',"
                         + "  'table-name'='"
                         + INPUT_TABLE
                         + "',"
                         + "  'username'='"
-                        + DB2_CONTAINER.getUsername()
+                        + getMetadata().getUsername()
                         + "',"
                         + "  'password'='"
-                        + DB2_CONTAINER.getPassword()
+                        + getMetadata().getPassword()
                         + "'"
                         + ")");
     }

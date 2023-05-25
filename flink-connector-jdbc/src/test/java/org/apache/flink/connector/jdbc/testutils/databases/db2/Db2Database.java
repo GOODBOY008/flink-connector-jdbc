@@ -16,29 +16,25 @@
  * limitations under the License.
  */
 
-package org.apache.flink.connector.jdbc.dialect.db2;
+package org.apache.flink.connector.jdbc.testutils.databases.db2;
 
-import org.apache.flink.test.util.AbstractTestBase;
+import org.apache.flink.connector.jdbc.testutils.DatabaseExtension;
+import org.apache.flink.connector.jdbc.testutils.DatabaseMetadata;
+import org.apache.flink.util.FlinkRuntimeException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.testcontainers.containers.Db2Container;
 import org.testcontainers.containers.output.Slf4jLogConsumer;
 import org.testcontainers.junit.jupiter.Container;
-import org.testcontainers.junit.jupiter.Testcontainers;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
+/** Db2 database for testing. */
+public class Db2Database extends DatabaseExtension {
 
-/** Basic class for testing DB2 jdbc. */
-@Testcontainers
-public class Db2TestBaseITCase extends AbstractTestBase {
-
-    private static final Logger LOG = LoggerFactory.getLogger(Db2TestBaseITCase.class);
+    private static final Logger LOG = LoggerFactory.getLogger(Db2Database.class);
 
     @Container
-    protected static final Db2Container DB2_CONTAINER =
+    protected static final Db2Container CONTAINER =
             new Db2Container()
                     .withUsername("db2inst1")
                     .withPassword("flinkpw")
@@ -47,10 +43,27 @@ public class Db2TestBaseITCase extends AbstractTestBase {
                     .acceptLicense()
                     .withLogConsumer(new Slf4jLogConsumer(LOG));
 
-    protected Connection getJdbcConnection() throws SQLException {
-        return DriverManager.getConnection(
-                DB2_CONTAINER.getJdbcUrl(),
-                DB2_CONTAINER.getUsername(),
-                DB2_CONTAINER.getPassword());
+    private static Db2Metadata metadata;
+
+    public static Db2Metadata getMetadata() {
+        if (!CONTAINER.isRunning()) {
+            throw new FlinkRuntimeException("Container is stopped.");
+        }
+        if (metadata == null) {
+            metadata = new Db2Metadata(CONTAINER, true);
+        }
+        return metadata;
+    }
+
+    @Override
+    protected DatabaseMetadata startDatabase() throws Exception {
+        CONTAINER.start();
+        return getMetadata();
+    }
+
+    @Override
+    protected void stopDatabase() throws Exception {
+        CONTAINER.stop();
+        metadata = null;
     }
 }
