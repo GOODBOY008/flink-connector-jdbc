@@ -40,9 +40,9 @@ public class Db2DynamicTableSinkITCase extends JdbcDynamicTableSinkITCase implem
     protected TableRow createUpsertOutputTable() {
         return tableRow(
                 "dynamicSinkForUpsert",
-                pkField("cnt", dbType("NUMBER"), DataTypes.BIGINT().notNull()),
-                field("lencnt", dbType("NUMBER"), DataTypes.BIGINT().notNull()),
-                pkField("cTag", DataTypes.INT().notNull()),
+                pkField("cnt", DataTypes.FLOAT().notNull()),
+                field("lencnt", DataTypes.FLOAT().notNull()),
+                pkField("cTag", DataTypes.FLOAT().notNull()),
                 field("ts", dbType("TIMESTAMP"), DataTypes.TIMESTAMP()));
     }
 
@@ -51,7 +51,7 @@ public class Db2DynamicTableSinkITCase extends JdbcDynamicTableSinkITCase implem
         return tableRow(
                 "dynamicSinkForAppend",
                 field("id", DataTypes.INT().notNull()),
-                field("num", dbType("NUMBER"), DataTypes.BIGINT().notNull()),
+                field("num", DataTypes.INT().notNull()),
                 field("ts", dbType("TIMESTAMP"), DataTypes.TIMESTAMP()));
     }
 
@@ -60,18 +60,12 @@ public class Db2DynamicTableSinkITCase extends JdbcDynamicTableSinkITCase implem
         return tableRow(
                 "dynamicSinkForBatch",
                 field("NAME", DataTypes.VARCHAR(20).notNull()),
-                field("SCORE", dbType("NUMBER"), DataTypes.BIGINT().notNull()));
+                field("SCORE", DataTypes.INT().notNull()));
     }
 
     @Override
     protected TableRow createRealOutputTable() {
-        return tableRow("REAL_TABLE", field("real_data", dbType("REAL"), DataTypes.FLOAT()));
-    }
-
-    @Override
-    protected TableRow createCheckpointOutputTable() {
-        return tableRow(
-                "checkpointTable", field("id", dbType("NUMBER"), DataTypes.BIGINT().notNull()));
+        return tableRow("REAL_TABLE", field("real_data", DataTypes.FLOAT()));
     }
 
     @Override
