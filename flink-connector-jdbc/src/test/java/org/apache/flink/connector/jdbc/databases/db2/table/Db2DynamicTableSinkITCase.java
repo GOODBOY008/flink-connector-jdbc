@@ -18,62 +18,21 @@
 
 package org.apache.flink.connector.jdbc.databases.db2.table;
 
-import org.apache.flink.api.java.tuple.Tuple4;
-import org.apache.flink.configuration.Configuration;
 import org.apache.flink.connector.jdbc.databases.db2.Db2TestBase;
 import org.apache.flink.connector.jdbc.databases.db2.dialect.Db2Dialect;
-import org.apache.flink.connector.jdbc.internal.GenericJdbcSinkFunction;
 import org.apache.flink.connector.jdbc.table.JdbcDynamicTableSinkITCase;
-import org.apache.flink.connector.jdbc.table.JdbcDynamicTableSourceITCase;
 import org.apache.flink.connector.jdbc.testutils.tables.TableRow;
-import org.apache.flink.runtime.state.StateSnapshotContextSynchronousImpl;
-import org.apache.flink.streaming.api.datastream.DataStream;
-import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
-import org.apache.flink.streaming.api.functions.sink.SinkContextUtil;
-import org.apache.flink.streaming.api.functions.timestamps.AscendingTimestampExtractor;
-import org.apache.flink.streaming.util.MockStreamingRuntimeContext;
 import org.apache.flink.table.api.DataTypes;
-import org.apache.flink.table.api.EnvironmentSettings;
-import org.apache.flink.table.api.Table;
-import org.apache.flink.table.api.TableEnvironment;
-import org.apache.flink.table.api.TableResult;
-import org.apache.flink.table.api.bridge.java.StreamTableEnvironment;
-import org.apache.flink.table.catalog.Column;
-import org.apache.flink.table.catalog.ResolvedSchema;
-import org.apache.flink.table.connector.sink.DynamicTableSink;
-import org.apache.flink.table.connector.sink.SinkFunctionProvider;
-import org.apache.flink.table.data.GenericRowData;
-import org.apache.flink.table.data.RowData;
-import org.apache.flink.table.planner.factories.TestValuesTableFactory;
-import org.apache.flink.table.planner.runtime.utils.TestData;
-import org.apache.flink.table.runtime.connector.sink.SinkRuntimeProviderContext;
 import org.apache.flink.types.Row;
 
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-
 import java.math.BigDecimal;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.sql.Timestamp;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import static org.apache.flink.connector.jdbc.testutils.tables.TableBuilder.dbType;
 import static org.apache.flink.connector.jdbc.testutils.tables.TableBuilder.field;
 import static org.apache.flink.connector.jdbc.testutils.tables.TableBuilder.pkField;
 import static org.apache.flink.connector.jdbc.testutils.tables.TableBuilder.tableRow;
-import static org.apache.flink.table.api.Expressions.$;
-import static org.apache.flink.table.factories.utils.FactoryMocks.createTableSink;
-import static org.assertj.core.api.Assertions.assertThat;
 
 /** The Table Sink ITCase for {@link Db2Dialect}. */
 public class Db2DynamicTableSinkITCase extends JdbcDynamicTableSinkITCase implements Db2TestBase {
@@ -137,5 +96,4 @@ public class Db2DynamicTableSinkITCase extends JdbcDynamicTableSinkITCase implem
                         new BigDecimal("11.3"),
                         new BigDecimal("22.6")));
     }
-
 }
