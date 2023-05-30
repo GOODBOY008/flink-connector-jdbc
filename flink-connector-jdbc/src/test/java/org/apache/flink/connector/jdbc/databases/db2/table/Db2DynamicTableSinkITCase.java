@@ -40,32 +40,33 @@ public class Db2DynamicTableSinkITCase extends JdbcDynamicTableSinkITCase implem
     protected TableRow createUpsertOutputTable() {
         return tableRow(
                 "dynamicSinkForUpsert",
-                pkField("cnt", DataTypes.FLOAT().notNull()),
-                field("lencnt", DataTypes.FLOAT().notNull()),
-                pkField("cTag", DataTypes.FLOAT().notNull()),
-                field("ts", dbType("TIMESTAMP"), DataTypes.TIMESTAMP()));
+                pkField("cnt", dbType("FLOAT"), DataTypes.FLOAT().notNull()),
+                field("lencnt", dbType("FLOAT"), DataTypes.FLOAT().notNull()),
+                pkField("cTag", dbType("INT"), DataTypes.INT().notNull()),
+                field("ts", dbType("TIMESTAMP"), DataTypes.TIMESTAMP(3)));
     }
 
     @Override
     protected TableRow createAppendOutputTable() {
         return tableRow(
                 "dynamicSinkForAppend",
-                field("id", DataTypes.INT().notNull()),
-                field("num", DataTypes.INT().notNull()),
-                field("ts", dbType("TIMESTAMP"), DataTypes.TIMESTAMP()));
+                field("id", dbType("INT"), DataTypes.INT().notNull()),
+                field("num", dbType("INT"), DataTypes.INT().notNull()),
+                field("ts", dbType("TIMESTAMP"), DataTypes.TIMESTAMP(3)));
     }
 
     @Override
     protected TableRow createBatchOutputTable() {
         return tableRow(
                 "dynamicSinkForBatch",
-                field("NAME", DataTypes.VARCHAR(20).notNull()),
-                field("SCORE", DataTypes.INT().notNull()));
+                field("NAME", dbType("VARCHAR(20)"), DataTypes.VARCHAR(20).notNull()),
+                field("SCORE", dbType("INT"), DataTypes.INT().notNull()));
     }
 
     @Override
-    protected TableRow createRealOutputTable() {
-        return tableRow("REAL_TABLE", field("real_data", DataTypes.FLOAT()));
+    protected TableRow createCheckpointOutputTable() {
+        return tableRow(
+                "checkpointTable", field("id", dbType("BIGINT"), DataTypes.BIGINT().notNull()));
     }
 
     @Override
