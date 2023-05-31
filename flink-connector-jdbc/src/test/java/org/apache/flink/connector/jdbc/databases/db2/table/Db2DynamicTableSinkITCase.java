@@ -23,11 +23,6 @@ import org.apache.flink.connector.jdbc.databases.db2.dialect.Db2Dialect;
 import org.apache.flink.connector.jdbc.table.JdbcDynamicTableSinkITCase;
 import org.apache.flink.connector.jdbc.testutils.tables.TableRow;
 import org.apache.flink.table.api.DataTypes;
-import org.apache.flink.types.Row;
-
-import java.math.BigDecimal;
-import java.util.Arrays;
-import java.util.List;
 
 import static org.apache.flink.connector.jdbc.testutils.tables.TableBuilder.dbType;
 import static org.apache.flink.connector.jdbc.testutils.tables.TableBuilder.field;
@@ -40,55 +35,16 @@ public class Db2DynamicTableSinkITCase extends JdbcDynamicTableSinkITCase implem
     protected TableRow createUpsertOutputTable() {
         return tableRow(
                 "dynamicSinkForUpsert",
-                pkField("cnt", dbType("FLOAT"), DataTypes.FLOAT().notNull()),
-                field("lencnt", dbType("FLOAT"), DataTypes.FLOAT().notNull()),
-                pkField("cTag", dbType("INT"), DataTypes.INT().notNull()),
+                pkField("cnt", dbType("FLOAT NOT NULL DEFAULT 0"), DataTypes.FLOAT().notNull()),
+                field("lencnt", dbType("FLOAT NOT NULL DEFAULT 0"), DataTypes.FLOAT().notNull()),
+                pkField("cTag", dbType("INT DEFAULT 0 NOT NULL"), DataTypes.INT().notNull()),
                 field("ts", dbType("TIMESTAMP"), DataTypes.TIMESTAMP(3)));
-    }
-
-    @Override
-    protected TableRow createAppendOutputTable() {
-        return tableRow(
-                "dynamicSinkForAppend",
-                field("id", dbType("INT"), DataTypes.INT().notNull()),
-                field("num", dbType("INT"), DataTypes.INT().notNull()),
-                field("ts", dbType("TIMESTAMP"), DataTypes.TIMESTAMP(3)));
-    }
-
-    @Override
-    protected TableRow createBatchOutputTable() {
-        return tableRow(
-                "dynamicSinkForBatch",
-                field("NAME", dbType("VARCHAR(20)"), DataTypes.VARCHAR(20).notNull()),
-                field("SCORE", dbType("INT"), DataTypes.INT().notNull()));
     }
 
     @Override
     protected TableRow createCheckpointOutputTable() {
         return tableRow(
-                "checkpointTable", field("id", dbType("BIGINT"), DataTypes.BIGINT().notNull()));
-    }
-
-    @Override
-    protected List<Row> testUserData() {
-        return Arrays.asList(
-                Row.of(
-                        "user1",
-                        "Tom",
-                        "tom123@gmail.com",
-                        new BigDecimal("8.1"),
-                        new BigDecimal("16.2")),
-                Row.of(
-                        "user3",
-                        "Bailey",
-                        "bailey@qq.com",
-                        new BigDecimal("9.99"),
-                        new BigDecimal("19.98")),
-                Row.of(
-                        "user4",
-                        "Tina",
-                        "tina@gmail.com",
-                        new BigDecimal("11.3"),
-                        new BigDecimal("22.6")));
+                "checkpointTable",
+                field("id", dbType("BIGINT DEFAULT 0 NOT NULL"), DataTypes.BIGINT().notNull()));
     }
 }

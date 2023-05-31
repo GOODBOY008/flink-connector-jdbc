@@ -25,6 +25,7 @@ import org.apache.flink.connector.jdbc.testutils.tables.TableRow;
 import org.apache.flink.table.api.DataTypes;
 import org.apache.flink.types.Row;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -43,23 +44,26 @@ public class Db2DynamicTableSourceITCase extends JdbcDynamicTableSourceITCase
     protected TableRow createInputTable() {
         return tableRow(
                 "jdbDynamicTableSource",
-                field("ID", dbType("INTEGER"), DataTypes.BIGINT().notNull()),
-                field("BOOLEAN_C", dbType("BOOLEAN"), DataTypes.BOOLEAN()),
-                field("SMALL_C", dbType("SMALLINT"), DataTypes.SMALLINT()),
-                field("INT_C", dbType("INTEGER"), DataTypes.INT()),
-                field("BIG_C", dbType("BIGINT"), DataTypes.BIGINT()),
-                field("REAL_C", dbType("REAL"), DataTypes.FLOAT()),
-                field("DOUBLE_C", dbType("DOUBLE"), DataTypes.DOUBLE()),
-                field("NUMERIC_C", dbType("NUMERIC(10, 5)"), DataTypes.DECIMAL(10, 5)),
-                field("DECIMAL_C", dbType("DECIMAL(10, 1)"), DataTypes.DECIMAL(10, 1)),
-                field("VARCHAR_C", dbType("VARCHAR(200)"), DataTypes.STRING()),
-                field("CHAR_C", dbType("CHAR"), DataTypes.CHAR(1)),
-                field("CHARACTER_C", dbType("CHAR(3)"), DataTypes.CHAR(3)),
-                field("TIMESTAMP_C", dbType("TIMESTAMP"), DataTypes.TIMESTAMP(3)),
-                field("DATE_C", dbType("DATE"), DataTypes.DATE()),
-                field("TIME_C", dbType("TIME"), DataTypes.TIME(0)),
-                field("DEFAULT_NUMERIC_C", dbType("NUMERIC"), DataTypes.DECIMAL(10, 0)),
-                field("TIMESTAMP_PRECISION_C", dbType("TIMESTAMP(9)"), DataTypes.TIMESTAMP(9)));
+                field("id", dbType("BIGINT"), DataTypes.BIGINT().notNull()),
+                field("decimal_col", dbType("NUMERIC(10, 4)"), DataTypes.DECIMAL(10, 4)),
+                field("timestamp6_col", dbType("TIMESTAMP(6)"), DataTypes.TIMESTAMP(6)),
+                // other fields are covered by the base class
+                field("boolean_c", dbType("BOOLEAN"), DataTypes.BOOLEAN()),
+                field("small_c", dbType("SMALLINT"), DataTypes.SMALLINT()),
+                field("int_c", dbType("INTEGER"), DataTypes.INT()),
+                field("big_c", dbType("BIGINT"), DataTypes.BIGINT()),
+                field("real_c", dbType("REAL"), DataTypes.FLOAT()),
+                field("double_c", dbType("DOUBLE"), DataTypes.DOUBLE()),
+                field("numeric_c", dbType("NUMERIC(10, 5)"), DataTypes.DECIMAL(10, 5)),
+                field("decimal_c", dbType("DECIMAL(10, 1)"), DataTypes.DECIMAL(10, 1)),
+                field("varchar_c", dbType("VARCHAR(200)"), DataTypes.STRING()),
+                field("char_c", dbType("CHAR"), DataTypes.CHAR(1)),
+                field("character_c", dbType("CHAR(3)"), DataTypes.CHAR(3)),
+                field("timestamp_c", dbType("TIMESTAMP"), DataTypes.TIMESTAMP(3)),
+                field("date_c", dbType("DATE"), DataTypes.DATE()),
+                field("time_c", dbType("TIME"), DataTypes.TIME(0)),
+                field("default_numeric_c", dbType("NUMERIC"), DataTypes.DECIMAL(10, 0)),
+                field("timestamp_precision_c", dbType("TIMESTAMP(9)"), DataTypes.TIMESTAMP(9)));
     }
 
     @Override
@@ -67,39 +71,43 @@ public class Db2DynamicTableSourceITCase extends JdbcDynamicTableSourceITCase
         return Arrays.asList(
                 Row.of(
                         1L,
+                        BigDecimal.valueOf(100.1234),
+                        LocalDateTime.parse("2020-01-01T15:35:00.123456"),
                         true,
                         (short) 32767,
                         65535,
-                        2147483647,
+                        2147483647L,
                         5.5f,
                         6.6d,
-                        123.12345,
-                        404.4,
+                        BigDecimal.valueOf(123.12345),
+                        BigDecimal.valueOf(404.4),
                         "Hello World",
                         "a",
                         "abc",
                         LocalDateTime.parse("2020-07-17T18:00:22.123"),
                         LocalDate.parse("2020-07-17"),
                         LocalTime.parse("18:00:22"),
-                        500,
+                        BigDecimal.valueOf(500),
                         LocalDateTime.parse("2020-07-17T18:00:22.123456789")),
                 Row.of(
                         2L,
+                        BigDecimal.valueOf(101.1234),
+                        LocalDateTime.parse("2020-01-01T15:36:01.123456"),
                         false,
                         (short) 32767,
                         65535,
-                        2147483647,
+                        2147483647L,
                         5.5f,
                         6.6d,
-                        123.12345,
-                        404.4,
+                        BigDecimal.valueOf(123.12345),
+                        BigDecimal.valueOf(404.4),
                         "Hello World",
                         "a",
                         "abc",
                         LocalDateTime.parse("2020-07-17T18:00:22.123"),
                         LocalDate.parse("2020-07-17"),
                         LocalTime.parse("18:00:22"),
-                        500,
+                        BigDecimal.valueOf(500),
                         LocalDateTime.parse("2020-07-17T18:00:22.123456789")));
     }
 }
