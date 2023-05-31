@@ -35,8 +35,8 @@ public class Db2DynamicTableSinkITCase extends JdbcDynamicTableSinkITCase implem
     protected TableRow createUpsertOutputTable() {
         return tableRow(
                 "dynamicSinkForUpsert",
-                pkField("cnt", dbType("FLOAT NOT NULL DEFAULT 0"), DataTypes.FLOAT().notNull()),
-                field("lencnt", dbType("FLOAT NOT NULL DEFAULT 0"), DataTypes.FLOAT().notNull()),
+                pkField("cnt", dbType("INT NOT NULL DEFAULT 0"), DataTypes.INT().notNull()),
+                field("lencnt", dbType("INT NOT NULL DEFAULT 0"), DataTypes.INT().notNull()),
                 pkField("cTag", dbType("INT DEFAULT 0 NOT NULL"), DataTypes.INT().notNull()),
                 field("ts", dbType("TIMESTAMP"), DataTypes.TIMESTAMP(3)));
     }
