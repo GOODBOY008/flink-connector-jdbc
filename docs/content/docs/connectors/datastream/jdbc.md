@@ -66,7 +66,7 @@ JdbcSink.sink(
 
 ### SQL DML statement and JDBC statement builder
 
-The sink builds one [JDBC prepared statement](https://docs.oracle.com/en/javadddd/javase/11/docs/api/java.sql/java/sql/PreparedStatement.html) from a user-provider SQL string, e.g.:
+The sink builds one [JDBC prepared statement](https://docs.oracle.com/en/java/javase/11/docs/api/java.sql/java/sql/PreparedStatement.html) from a user-provider SQL string, e.g.:
 
 ```sql
 INSERT INTO some_table field1, field2 values (?, ?)
